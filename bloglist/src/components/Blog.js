@@ -23,14 +23,7 @@ const Blog = ({ user, blog, likeBlog, deleteBlog }) => {
   const handleLikeButton = (event) => {
     event.preventDefault()
 
-    const updatedBlog = {
-      user: blog.user,
-      likes: blog.likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url
-    }
-    likeBlog(blog.id, updatedBlog)
+    likeBlog(blog)
   }
 
   const handleRemoveButton = (event) => {
