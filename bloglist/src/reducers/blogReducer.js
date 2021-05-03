@@ -6,7 +6,7 @@ const reducer = (state = [], action) => {
       return [...state, action.data]
     case 'DELETE':
       return state.filter(blog => blog.id !== action.id)
-    case 'INIT':
+    case 'INIT_BLOGS':
       return action.data
     case 'LIKE':
       const likedBlog = state.find(blog => blog.id === action.data.id)
@@ -58,7 +58,7 @@ export const initializeBlogs = () => {
   return async dispatch => {
     const blogs = await blogService.getAll()
     dispatch({
-      type: 'INIT',
+      type: 'INIT_BLOGS',
       data: blogs
     })
   }
