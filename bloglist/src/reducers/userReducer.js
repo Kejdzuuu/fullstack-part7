@@ -25,9 +25,7 @@ export const initializeUser = () => {
 
 export const logInUser = (username, password) => {
   return async dispatch => {
-    console.log('b4')
     const user = await loginService.login({ username, password })
-    console.log('after')
     window.localStorage.setItem('loggedUser', JSON.stringify(user))
     blogService.setToken(user.token)
     dispatch({

@@ -4,10 +4,15 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
+import Users from './components/Users'
 import { showNotification } from './reducers/notificationReducer'
 import { createNewBlog, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
 import { initializeUser, logInUser } from './reducers/userReducer'
 import { useDispatch, useSelector } from 'react-redux'
+import {
+  BrowserRouter as Router,
+  Switch, Route
+} from 'react-router-dom'
 
 const App = () => { 
   const dispatch = useDispatch()
@@ -27,7 +32,6 @@ const App = () => {
 
     dispatch(logInUser(username, password))
     .catch(error => {
-      console.log('Wrong credentials')
       dispatch(showNotification('Wrong username or password', 'error', 3))
     })
     setUsername('')
@@ -44,7 +48,6 @@ const App = () => {
 
     dispatch(createNewBlog(content, user))
     .catch(error => {
-      console.log('Something went wrong')
       dispatch(showNotification('blog could not be added', 'error', 3))
     })
     dispatch(showNotification(`${content.title} by ${content.author} added`, 'info', 3))
@@ -89,23 +92,34 @@ const App = () => {
   }
 
   return (
-    <div>
-      <h2>blogs</h2>
-      <Notification />
+    <Router>
       <div>
-        <p>
-          {user.name ?
-            `logged in as ${user.name}` :
-            `logged in as ${user.username}`
-          }
-          <button onClick={handleLogout}>logout</button>
-        </p>
+        <h2>blogs</h2>
+        <Notification />
+        <div>
+          <p>
+            {user.name ?
+              `logged in as ${user.name}` :
+              `logged in as ${user.username}`
+            }
+            <br />
+            <button onClick={handleLogout}>logout</button>
+          </p>
+        </div>
+
+        <Switch>
+          <Route path="/users">
+            <Users />
+          </Route>
+          <Route path="/">
+            {newBlogForm()}
+            {blogs.map(blog =>
+              <Blog key={blog.id} blog={blog} user={user.username} likeBlog={likeBlogHandler} deleteBlog={deleteBlogHandler}/>
+            )}
+          </Route>
+        </Switch>
       </div>
-      {newBlogForm()}
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={user.username} likeBlog={likeBlogHandler} deleteBlog={deleteBlogHandler}/>
-      )}
-    </div>
+    </Router>
   )
 }
 
