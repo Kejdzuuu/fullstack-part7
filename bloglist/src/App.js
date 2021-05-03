@@ -7,13 +7,14 @@ import NewBlogForm from './components/NewBlogForm'
 import Users from './components/Users'
 import User from './components/User'
 import BlogDetails from './components/BlogDetails'
+import './index.css'
 import { showNotification } from './reducers/notificationReducer'
 import { createNewBlog, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
 import { initializeUser, logInUser } from './reducers/userReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   BrowserRouter as Router,
-  Switch, Route
+  Switch, Route, Link
 } from 'react-router-dom'
 
 const App = () => { 
@@ -77,6 +78,10 @@ const App = () => {
     </Togglable>
   )
 
+  const padding = {
+    padding: 5
+  }
+
   if (user === null) {
     return (
       <div>
@@ -96,18 +101,17 @@ const App = () => {
   return (
     <Router>
       <div>
+        <div>
+          <Link style={padding} to="/">blogs</Link>
+          <Link style={padding} to="/users">users</Link>
+          {user.name ?
+            `logged in as ${user.name}` :
+            `logged in as ${user.username}`
+          }
+          <button onClick={handleLogout}>logout</button>
+        </div>
         <h2>blogs</h2>
         <Notification />
-        <div>
-          <p>
-            {user.name ?
-              `logged in as ${user.name}` :
-              `logged in as ${user.username}`
-            }
-            <br />
-            <button onClick={handleLogout}>logout</button>
-          </p>
-        </div>
 
         <Switch>
           <Route path="/blogs/:id">
