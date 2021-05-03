@@ -6,6 +6,7 @@ import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
 import Users from './components/Users'
 import User from './components/User'
+import BlogDetails from './components/BlogDetails'
 import { showNotification } from './reducers/notificationReducer'
 import { createNewBlog, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
 import { initializeUser, logInUser } from './reducers/userReducer'
@@ -109,6 +110,9 @@ const App = () => {
         </div>
 
         <Switch>
+          <Route path="/blogs/:id">
+            <BlogDetails likeBlog={likeBlogHandler}/>
+          </Route>
           <Route path="/users/:id">
             <User />
           </Route>
