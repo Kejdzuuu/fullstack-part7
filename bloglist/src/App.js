@@ -5,6 +5,7 @@ import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
 import Users from './components/Users'
+import User from './components/User'
 import { showNotification } from './reducers/notificationReducer'
 import { createNewBlog, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
 import { initializeUser, logInUser } from './reducers/userReducer'
@@ -108,6 +109,9 @@ const App = () => {
         </div>
 
         <Switch>
+          <Route path="/users/:id">
+            <User />
+          </Route>
           <Route path="/users">
             <Users />
           </Route>
