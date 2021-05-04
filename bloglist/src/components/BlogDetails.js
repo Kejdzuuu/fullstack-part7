@@ -29,6 +29,14 @@ const BlogDetails = ({ likeBlog }) => {
       <div>
         added by {blog.user.name ? blog.user.name : blog.user.username}
       </div>
+      <h2>{blog.comments.length} comments</h2>
+      <div>
+        <ul>
+          {blog.comments.map((comment, index) =>
+            <li key={index}>{comment}</li>
+          )}
+        </ul>
+      </div>
     </div>
   )
 }
