@@ -1,20 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import React, { useEffect } from 'react'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
-import NewBlogForm from './components/NewBlogForm'
+import Blogs from './components/Blogs'
 import Users from './components/Users'
 import User from './components/User'
 import BlogDetails from './components/BlogDetails'
+import NavigationBar from './components/NavigationBar'
 import './index.css'
-import { showNotification } from './reducers/notificationReducer'
-import { createNewBlog, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
-import { initializeUser, logInUser } from './reducers/userReducer'
+import { initializeBlogs } from './reducers/blogReducer'
+import { initializeUser } from './reducers/userReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   BrowserRouter as Router,
-  Switch, Route, Link
+  Switch, Route
 } from 'react-router-dom'
 
 const App = () => { 
@@ -24,75 +22,13 @@ const App = () => {
     dispatch(initializeUser())
   }, [dispatch])
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-
-  const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
-    dispatch(logInUser(username, password))
-    .catch(error => {
-      dispatch(showNotification('Wrong username or password', 'error', 3))
-    })
-    setUsername('')
-    setPassword('')
-  }
-
-  const handleLogout = () => {
-    window.localStorage.clear()
-    window.location.reload()
-  }
-
-  const addNewBlog = async (content) => {
-    newBlogFormRef.current.toggleVisibility()
-
-    dispatch(createNewBlog(content, user))
-    .catch(error => {
-      dispatch(showNotification('blog could not be added', 'error', 3))
-    })
-    dispatch(showNotification(`${content.title} by ${content.author} added`, 'info', 3))
-  }
-
-  const likeBlogHandler = async (blog) => {
-    dispatch(likeBlog(blog))
-    .catch(error => {
-      dispatch(showNotification('couldn\'t like blog', 'error', 3))
-    })
-  }
-
-  const deleteBlogHandler = async (id) => {
-    dispatch(deleteBlog(id))
-    .catch(error => {
-      dispatch(showNotification('couldn\'t delete blog', 'error', 3))
-    })
-  }
-
-  const newBlogFormRef = useRef()
-
-  const newBlogForm = () => (
-    <Togglable buttonLabel='add blog' ref={newBlogFormRef}>
-      <NewBlogForm addNewBlog={addNewBlog} />
-    </Togglable>
-  )
-
-  const padding = {
-    padding: 5
-  }
 
   if (user === null) {
     return (
-      <div>
+      <div className="container">
         <h2>Log in</h2>
-        <LoginForm
-          handleSubmit={handleLogin}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          username={username}
-          password={password}
-        />
+        <LoginForm />
         <Notification />
       </div>
     )
@@ -101,35 +37,25 @@ const App = () => {
   return (
     <Router>
       <div>
-        <div>
-          <Link style={padding} to="/">blogs</Link>
-          <Link style={padding} to="/users">users</Link>
-          {user.name ?
-            `logged in as ${user.name}` :
-            `logged in as ${user.username}`
-          }
-          <button onClick={handleLogout}>logout</button>
-        </div>
-        <h2>blogs</h2>
+        <NavigationBar />
         <Notification />
 
-        <Switch>
-          <Route path="/blogs/:id">
-            <BlogDetails likeBlog={likeBlogHandler}/>
-          </Route>
-          <Route path="/users/:id">
-            <User />
-          </Route>
-          <Route path="/users">
-            <Users />
-          </Route>
-          <Route path="/">
-            {newBlogForm()}
-            {blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} user={user.username} likeBlog={likeBlogHandler} deleteBlog={deleteBlogHandler}/>
-            )}
-          </Route>
-        </Switch>
+        <div className="container">
+          <Switch>
+            <Route path="/blogs/:id">
+              <BlogDetails />
+            </Route>
+            <Route path="/users/:id">
+              <User />
+            </Route>
+            <Route path="/users">
+              <Users />
+            </Route>
+            <Route path="/">
+              <Blogs />
+            </Route>
+          </Switch>
+        </div>
       </div>
     </Router>
   )
